@@ -6,16 +6,13 @@
   <title>Job Application - Frontend Engineer</title>
   <style>
     body {
-      font-family: Arial, sans-serif; 
-      line-height: 1.6;
-      margin: 0;
-      height: 100vh;
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-
-      /* Background */
-      background: url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80") 
+      height: 100vh;
+      margin: 0;
+      background: url("https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80")
         no-repeat center center fixed;
       background-size: cover;
     }
@@ -24,7 +21,7 @@
       background-color: rgba(255, 255, 255, 0.95);
       padding: 25px 30px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       width: 400px;
     }
 
@@ -108,7 +105,7 @@
       <input type="number" id="phone-number" placeholder="Enter your phone number" required>
 
       <label for="resume">Resume:</label>
-      <input type="file" id="resume" required>
+      <input type="file" id="resume" accept=".pdf,.doc,.docx" required>
 
       <input type="submit" value="Submit Application">
     </form>
@@ -127,19 +124,30 @@
       const email = document.getElementById('email').value.trim();
       const fatherName = document.getElementById('father-name').value.trim();
       const phoneNumber = document.getElementById('phone-number').value.trim();
+      const resumeFile = document.getElementById('resume').files[0];
       const appliedFor = "Frontend Engineer";
       const date = new Date().toLocaleString();
 
-      // ✅ Store all applications in same key "applications"
-      const newApplication = { name, email, fatherName, phoneNumber, appliedFor, date };
+      if (resumeFile) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const resumeData = event.target.result;
+          saveApplication(name, email, fatherName, phoneNumber, appliedFor, resumeFile.name, resumeData, date);
+        };
+        reader.readAsDataURL(resumeFile);
+      } else {
+        saveApplication(name, email, fatherName, phoneNumber, appliedFor, null, null, date);
+      }
+    }
 
-      let applications = JSON.parse(localStorage.getItem('applications')) || [];
-      applications.push(newApplication);
-      localStorage.setItem('applications', JSON.stringify(applications));
+    function saveApplication(name, email, fatherName, phoneNumber, appliedFor, resumeName, resumeData, date) {
+      const applications = JSON.parse(localStorage.getItem("applications")) || [];
+      applications.push({ name, email, fatherName, phoneNumber, appliedFor, resumeName, resumeData, date });
+      localStorage.setItem("applications", JSON.stringify(applications));
 
       alert(`✅ Application for ${appliedFor} saved successfully!`);
-      document.getElementById('confirmation-message').style.display = 'block';
-      document.getElementById('application-form').reset();
+      document.getElementById("confirmation-message").style.display = "block";
+      document.getElementById("application-form").reset();
     }
   </script>
 </body>
