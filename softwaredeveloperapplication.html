@@ -76,10 +76,6 @@
       background-color: #0056b3;
     }
 
-    ::placeholder {
-      color: #999999;
-    }
-
     .confirmation-message {
       margin-top: 20px;
       color: green;
@@ -128,16 +124,17 @@
       const appliedFor = "Software Developer";
       const date = new Date().toLocaleString();
 
-      if (resumeFile) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const resumeData = event.target.result;
-          saveApplication(name, email, fatherName, phoneNumber, appliedFor, resumeFile.name, resumeData, date);
-        };
-        reader.readAsDataURL(resumeFile);
-      } else {
-        saveApplication(name, email, fatherName, phoneNumber, appliedFor, null, null, date);
+      if (!resumeFile) {
+        alert("⚠️ Please upload your resume before submitting!");
+        return;
       }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        const resumeData = event.target.result;
+        saveApplication(name, email, fatherName, phoneNumber, appliedFor, resumeFile.name, resumeData, date);
+      };
+      reader.readAsDataURL(resumeFile);
     }
 
     function saveApplication(name, email, fatherName, phoneNumber, appliedFor, resumeName, resumeData, date) {
