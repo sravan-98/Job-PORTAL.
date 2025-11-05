@@ -5,39 +5,50 @@
 <title>All Submitted Applications</title>
 <style>
   body { 
-    font-family: Arial; 
-    background: #f4f4f9; 
+    font-family: Arial, sans-serif; 
+    background-color: #f2f2f2;  /* Removed background image */
     padding: 20px; 
+    min-height: 100vh;
   }
+
   h2 { 
     text-align: center; 
-    color: #007bff; 
+    color: #333333; 
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 10px;
   }
+
   table { 
     width: 100%; 
     border-collapse: collapse; 
     margin-top: 20px; 
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
   }
+
   th, td { 
     border: 1px solid #ccc; 
     padding: 10px; 
     text-align: left; 
   }
+
   th { 
     background-color: #007bff; 
     color: white; 
   }
-  td { 
-    background-color: #fff; 
-  }
+
   a.resume-link {
     color: #007bff;
     text-decoration: none;
     font-weight: bold;
   }
+
   a.resume-link:hover {
     text-decoration: underline;
   }
+
   .clear-btn {
     display: block; 
     margin: 20px auto; 
@@ -49,6 +60,7 @@
     cursor: pointer; 
     font-size: 16px;
   }
+
   .clear-btn:hover { 
     background: #b52a35; 
   }
@@ -56,6 +68,7 @@
 </head>
 <body>
   <h2>All Submitted Applications</h2>
+
   <table id="applications-table">
     <tr>
       <th>Full Name</th>
@@ -79,10 +92,9 @@
       table.innerHTML += emptyRow;
     } else {
       applications.forEach(app => {
-        let resumeDisplay = 'No file uploaded';
-        if (app.resume && typeof app.resume === 'string') {
-          // ✅ Make resume clickable link
-          resumeDisplay = `<a href="${app.resume}" target="_blank" class="resume-link">View Resume</a>`;
+        let resumeDisplay = 'Not Uploaded';
+        if (app.resumeData && app.resumeName) {
+          resumeDisplay = `<a href="${app.resumeData}" target="_blank" class="resume-link">${app.resumeName}</a>`;
         }
 
         const row = `
