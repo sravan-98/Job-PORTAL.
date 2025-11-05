@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Portal</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      line-height: 1.6;
+      background-image: url(https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80);
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-position: down;
+    }
+    nav { background-color: #333; padding: 1rem; display: none; } 
+    nav ul { list-style: none; display: flex; justify-content: space-around; flex-wrap: wrap; }
+    nav ul li { position: relative; }
+    nav ul li a, details summary {
+      color: white; text-decoration: none; padding: 0.5rem 1rem;
+      border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease;
+    }
+    nav ul li a:hover, details summary:hover { background-color: #575757; }
+
+    #login-modal {
+      display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background-color: white; padding: 2rem; border-radius: 10px; width: 90%; max-width: 400px;
+      position: relative; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+    .modal-content input {
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 5px;
+    }
+    .modal-content input[type="submit"] {
+      background-color: #28a745; color: white; cursor: pointer; margin-top: 15px;
+    }
+    .modal-content input[type="submit"]:hover { background-color: #218838; }
+    .switch-form {
+      margin-top: 10px; color: blue;
+      cursor: pointer; text-decoration: underline;
+    }
+
+    #logout-btn {
+      display: none; color: white; background-color: #DC3545;
+      padding: 0.5rem 1rem; border-radius: 5px;
+      cursor: pointer; border: none;
+    }
+    #main-content { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- Login/Sign Up Modal -->
+  <div id="login-modal">
+    <div class="modal-content">
+      <h1 id="form-title">Login</h1>
+      <form id="login-form">
+        <label>Login ID:</label>
+        <input type="text" id="login-id" required>
+        <label>Password:</label>
+        <input type="password" id="password" required>
+        <input type="submit" value="Login">
+        <p class="switch-form" id="show-signup">Don't have an account? Sign Up</p>
+      </form>
+
+      <form id="signup-form" style="display: none;">
+        <label>New Login ID:</label>
+        <input type="text" id="new-login-id" required>
+        <label>New Password:</label>
+        <input type="password" id="new-password" required>
+        <input type="submit" value="Sign Up">
+        <p class="switch-form" id="show-login">Already have an account? Login</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main-content">
+    <nav>
+      <ul>
+        <li><a href="home.html">Home</a></li>
+        <li>
+          <details>
+            <summary>Job Vacancies ▾</summary>
+            <div class="dropdown-content">
+              <a href="softwaredeveloperapplication.html">Software Developer - Java & Spring Boot</a>
+              <a href="applicationforfrontend.html">Front-End Engineer - HTML, CSS, React.js</a>
+              <a href="dataanalyst.html">Data Analyst - SQL & Excel</a>
+            </div>
+          </details>
+        </li>
+        <li><a href="viewapplicationsdataanalyist.html">View Applications</a></li>
+        <li>
+          <details>
+            <summary>Contact Us</summary>
+            <ul>
+              <li>📞 7842824859</li>
+              <li>📞 7671818994</li>
+              <li>📞 9177256600</li>
+              <li>📞 9390640960</li>
+            </ul>
+          </details>
+        </li>
+        <li><a href="aboutus.html">About Us</a></li>
+        <li><button id="logout-btn">Logout</button></li>
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    // Default users
+    const defaultUsers = [
+      { id: 'Sai', password: 'sai@123' },
+      { id: 'krishna', password: 'krishna@456' },
+      { id: 'Munaf', password: 'munaf@789' },
+      { id: 'Soujith', password: 'soujith@749' }
+    ];
+
+    // Load users from localStorage or set default
+    let users = JSON.parse(localStorage.getItem('users')) || defaultUsers;
+    localStorage.setItem('users', JSON.stringify(users));
+
+    // Check if user is already logged in (within 5 days)
+    const storedUser = JSON.parse(localStorage.getItem('loggedUser'));
+    if (storedUser) {
+      const now = new Date().getTime();
+      const fiveDays = 5 * 24 * 60 * 60 * 1000;
+      if (now - storedUser.time < fiveDays) {
+        showMainContent(storedUser.id);
+      } else {
+        localStorage.removeItem('loggedUser');
+      }
+    }
+
+    // Login functionality
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const loginId = this["login-id"].value.trim();
+      const password = this.password.value.trim();
+
+      const storedUsers = JSON.parse(localStorage.getItem('users')) || [];
+      const validUser = storedUsers.find(u => u.id === loginId && u.password === password);
+
+      if (validUser) {
+        alert("Login successful!");
+        const userData = { id: loginId, time: new Date().getTime() };
+        localStorage.setItem('loggedUser', JSON.stringify(userData));
+        showMainContent(loginId);
+      } else {
+        alert("Invalid credentials.");
+      }
+    });
+
+    // Show main content after login
+    function showMainContent(username) {
+      document.getElementById('login-modal').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+      document.querySelector('nav').style.display = 'block';
+      document.getElementById('logout-btn').style.display = 'inline-block';
+    }
+
+    // Sign up functionality (Save to localStorage)
+    document.getElementById('signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newId = this["new-login-id"].value.trim();
+      const newPassword = this["new-password"].value.trim();
+
+      let existingUsers = JSON.parse(localStorage.getItem('users')) || [];
+      if (existingUsers.some(u => u.id === newId)) {
+        alert("User already exists. Please choose another ID.");
+        return;
+      }
+
+      existingUsers.push({ id: newId, password: newPassword });
+      localStorage.setItem('users', JSON.stringify(existingUsers));
+
+      alert("Sign up successful! Please log in.");
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+      document.getElementById('login-form').reset();
+    });
+
+    // Switch between login and sign up forms
+    document.getElementById('show-signup').addEventListener('click', () => {
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'block';
+    });
+    document.getElementById('show-login').addEventListener('click', () => {
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    });
+
+    // Logout functionality
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('loggedUser');
+      document.getElementById('main-content').style.display = 'none';
+      document.querySelector('nav').style.display = 'none';
+      document.getElementById('logout-btn').style.display = 'none';
+      document.getElementById('login-modal').style.display = 'flex';
+      document.getElementById('login-form').reset();
+    });
+  </script>
+
+</body>
+</html>

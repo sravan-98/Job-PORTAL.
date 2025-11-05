@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Job Application - Software Developer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+
+      /* Background Image */
+      background: url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80") 
+        no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    #application {
+      background-color: rgba(255, 255, 255, 0.95);
+      padding: 25px 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333333;
+      margin-bottom: 20px;
+      text-transform: capitalize;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #444444;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+
+    input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    ::placeholder {
+      color: #999999;
+    }
+
+    .confirmation-message {
+      margin-top: 20px;
+      color: green;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div id="application">
+    <h2>Job Application for Software Developer</h2>
+    <form id="application-form" onsubmit="return submitApplication(event)">
+      <label for="name">Full Name:</label>
+      <input type="text" id="name" placeholder="Enter your full name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
+
+      <label for="father-name">Father's Name:</label>
+      <input type="text" id="father-name" placeholder="Enter your father's name" required>
+
+      <label for="phone-number">Phone Number:</label>
+      <input type="number" id="phone-number" placeholder="Enter your phone number" required>
+
+      <label for="resume">Resume:</label>
+      <input type="file" id="resume" required>
+
+      <input type="submit" value="Submit Application">
+    </form>
+
+    <div id="confirmation-message" class="confirmation-message" style="display: none;">
+      <h3>Your application was successfully submitted! 📩</h3>
+      <p>A confirmation message has been sent to your mobile.</p>
+    </div>
+  </div>
+
+  <script>
+    function submitApplication(event) {
+      event.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const fatherName = document.getElementById('father-name').value.trim();
+      const phoneNumber = document.getElementById('phone-number').value.trim();
+      const appliedFor = "Software Developer";
+      const date = new Date().toLocaleString();
+
+      // ✅ Save to the same localStorage key "applications"
+      const newApplication = { name, email, fatherName, phoneNumber, appliedFor, date };
+
+      let applications = JSON.parse(localStorage.getItem('applications')) || [];
+      applications.push(newApplication);
+      localStorage.setItem('applications', JSON.stringify(applications));
+
+      alert(`✅ Application for ${appliedFor} saved successfully!`);
+      document.getElementById('confirmation-message').style.display = 'block';
+      document.getElementById('application-form').reset();
+    }
+  </script>
+</body>
+</html>
