@@ -79,12 +79,10 @@
       table.innerHTML += emptyRow;
     } else {
       applications.forEach(app => {
-        // Handle resume display logic
         let resumeDisplay = 'No file uploaded';
-        
-        // ✅ If resume data and name exist, make clickable PDF link
-        if (app.resumeData && app.resumeName) {
-          resumeDisplay = `<a href="${app.resumeData}" target="_blank" class="resume-link">${app.resumeName}</a>`;
+        if (app.resume && typeof app.resume === 'string') {
+          // ✅ Make resume clickable link
+          resumeDisplay = `<a href="${app.resume}" target="_blank" class="resume-link">View Resume</a>`;
         }
 
         const row = `
